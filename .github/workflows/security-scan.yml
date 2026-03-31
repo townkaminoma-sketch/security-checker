@@ -39,7 +39,7 @@ jobs:
         run: uv pip install pip-audit bandit
 
       - name: Run security scan
-        run: uv run repo-security-checker scan --output security-report.json
+        run: uv run repo-security-checker scan --target-dir src --output security-report.json
 
       - name: Upload report
         if: always()
