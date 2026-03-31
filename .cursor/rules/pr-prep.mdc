@@ -1,0 +1,77 @@
+---
+description: Prepare PR-ready summaries with explicit purpose, non-goals, scope, tests, trade-offs, and rollback notes.
+---
+
+# PR Preparation
+
+Use this rule when preparing a change for pull request review.
+
+## PR objective
+
+A PR in this repository must represent **one purpose only**.
+
+Before preparing a PR summary, confirm:
+
+- This work belongs to exactly one checkpoint.
+- The purpose can be explained in one short sentence.
+- The diff does not include unrelated cleanup.
+
+## Required PR preparation checklist
+
+Prepare the following information:
+
+1. Why this checkpoint is needed now
+2. Purpose of this PR
+3. Explicit non-goals
+4. Files changed
+5. Areas explicitly not affected
+6. Tests run and results
+7. Known trade-offs
+8. Improvements intentionally deferred
+9. Rollback approach
+10. AI self-check result
+
+## Required writing style
+
+- Be concrete.
+- Do not use vague claims like "improved architecture" without specifics.
+- Separate facts from assumptions.
+- State unverified items explicitly.
+- Keep the summary easy to scan.
+
+## Scope discipline
+
+If the diff contains more than one independent purpose:
+
+- Do not prepare it as one PR.
+- Split the work by checkpoint or purpose.
+
+## Test reporting rules
+
+- Report only tests actually run.
+- If lint, type checks, or CI were not run, say so explicitly.
+- If something failed, do not bury it.
+
+## Rollback rules
+
+Always include a simple rollback explanation.
+
+Prefer rollback notes such as:
+
+- revert this PR cleanly
+- remove newly added skeleton files
+- restore previous interface behavior
+
+Avoid rollback notes that assume hidden knowledge.
+
+## AI self-check questions
+
+Before finalizing PR prep, answer:
+
+- Is this really one purpose?
+- Did I include unrelated changes?
+- Are the non-goals explicit?
+- Are the changed files listed?
+- Are the unaffected areas listed?
+- Are tests honestly reported?
+- Is rollback straightforward?

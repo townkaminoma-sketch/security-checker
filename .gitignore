@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.vscode/
+outputs/
+data/etf_universe_2013_2026.csv
+*.pyc

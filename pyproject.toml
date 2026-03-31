@@ -1,0 +1,20 @@
+[project]
+name = "foundation-template"
+version = "0.1.0"
+description = "Checkpoint-gated AI-assisted development template"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.2",
+    "ruff>=0.15.5",
+]

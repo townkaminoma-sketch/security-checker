@@ -1,0 +1,74 @@
+---
+alwaysApply: true
+description: Enforce implementation style for minimal, reversible, checkpoint-scoped changes.
+---
+
+# Implementation Style
+
+Follow this style whenever implementing code changes in this repository.
+
+## Core implementation principles
+
+1. Prefer **minimal diffs** over elegant rewrites.
+2. Prefer **existing structure** over new abstractions.
+3. Prefer **clear and explicit code** over clever code.
+4. Keep changes **reversible** and **easy to review**.
+5. Preserve existing behavior unless the current checkpoint explicitly changes it.
+
+## What to optimize for
+
+- Small reviewable patches
+- Predictable behavior
+- Clear naming
+- Easy rollback
+- Low blast radius
+
+## What to avoid
+
+- Broad refactors
+- Renaming files or symbols without strong checkpoint justification
+- Introducing helper layers that are not required now
+- Combining structural cleanup with feature work
+- Silent behavior changes
+- Hidden side effects
+
+## File editing behavior
+
+- Touch the fewest files possible.
+- Modify existing files before creating new ones, unless a new file clearly improves checkpoint isolation.
+- Keep public interfaces stable unless the checkpoint explicitly requires a change.
+- Do not move code across many files unless absolutely necessary.
+
+## Code style behavior
+
+- Write straightforward code.
+- Keep functions and modules focused on one responsibility.
+- Avoid speculative generalization.
+- Add comments only where they clarify intent, boundary, or non-obvious behavior.
+- Match the repository's existing naming and structure conventions.
+
+## Testing behavior
+
+- Add or update the smallest test set that proves the checkpoint goal.
+- Re-run affected existing tests whenever possible.
+- Do not claim confidence beyond the tests actually run.
+- Explicitly mark anything not verified.
+
+## Reporting behavior
+
+When reporting implementation results, include:
+
+- What changed
+- Why it changed
+- What did not change
+- What tests were run
+- What remains unverified
+
+## Decision rule
+
+If two approaches both satisfy the checkpoint, choose the one with:
+
+1. fewer changed files
+2. smaller behavioral surface area
+3. simpler rollback
+4. easier human review

@@ -1,0 +1,13 @@
+name: pr-invariants
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+concurrency:
+  group: pr-invariants-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scope:
+    uses: townkaminoma-sketch/shared-workflows/.github/workflows/pr-invariants.yml@main

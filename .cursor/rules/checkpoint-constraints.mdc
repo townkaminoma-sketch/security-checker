@@ -1,0 +1,63 @@
+---
+alwaysApply: true
+description: Enforce single-checkpoint execution, minimal diffs, no scope expansion, mandatory self-check, and no completion without tests.
+---
+
+# Checkpoint Constraints
+
+You are working inside a repository that uses **checkpoint-gated development**.
+
+## Absolute rules
+
+1. Work on **exactly one checkpoint** only.
+2. Do **not** expand scope beyond the current checkpoint.
+3. Do **not** perform broad refactors.
+4. Do **not** modify unrelated files.
+5. Do **not** treat work as complete if tests were not run.
+6. Do **not** propose or perform auto-merge or production deployment.
+7. Keep changes **minimal, reversible, and easy to review**.
+
+## Required behavior before implementation
+
+- Restate the current checkpoint goal in one short sentence.
+- List the files you expect to touch.
+- State what you will **not** do in this checkpoint.
+- If the requested change appears larger than one checkpoint, stop and split it.
+
+## Required behavior during implementation
+
+- Prefer the smallest possible change.
+- Reuse existing structure when possible.
+- Avoid renaming, moving, or reorganizing files unless strictly necessary for the checkpoint.
+- If you notice adjacent improvements, record them as follow-up items instead of implementing them now.
+
+## Required behavior after implementation
+
+Provide a short self-check that explicitly answers:
+
+- Did I stay within one checkpoint?
+- Did I avoid unrelated changes?
+- Did I avoid broad refactoring?
+- What files changed?
+- What tests were run?
+- Are any items still unverified?
+
+## Completion gate
+
+Never present the work as done unless all of the following are true:
+
+- The checkpoint goal is satisfied.
+- The diff remains minimal.
+- No unrelated files were changed.
+- Tests were run and results are reported.
+- Any unexecuted checks are explicitly marked as not run.
+
+## Escalation rule
+
+If the task requires any of the following, stop and request a new checkpoint instead of continuing:
+
+- Scope expansion
+- Cross-cutting refactor
+- Production wiring
+- Secret handling changes
+- More than one logically independent purpose in the same PR

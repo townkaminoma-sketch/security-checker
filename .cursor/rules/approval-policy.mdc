@@ -1,0 +1,92 @@
+---
+description: Reduce approval friction by allowing grouped read-only commands, while still requiring confirmation for write, push, PR, and destructive operations.
+---
+
+# Approval Policy
+
+Use a low-friction approval style for this repository.
+
+## Default intent
+
+Minimize repeated approval prompts for safe read-only work.
+Keep explicit approval gates for any operation that writes, stages, commits, pushes, opens PRs, changes dependencies, or deletes content.
+
+## Read-only commands that may be grouped
+
+The following are considered safe inspection commands and should be batched when possible:
+
+- `Set-Location`
+- `pwd`
+- `ls`
+- `dir`
+- `tree`
+- `git status`
+- `git branch --show-current`
+- `git branch`
+- `git diff`
+- `git diff --cached`
+- `git diff --stat`
+- `git log --oneline --decorate -n <n>`
+- file reads
+- repository structure inspection
+- `.github/`, `.cursor/`, `src/`, `tests/`, `configs/`, `docs/` inspection
+
+## Approval required before these operations
+
+Always stop and ask before:
+
+- creating a branch
+- creating, editing, renaming, moving, or deleting files
+- `git add`
+- `git restore`
+- `git rm`
+- `git commit`
+- `git push`
+- opening or updating a PR
+- changing CI, workflows, branch protection assumptions, or release settings
+- adding, removing, or upgrading dependencies
+- running destructive shell commands
+- touching secrets, auth, environment, deployment, or production-related files
+
+## Behavior expectations
+
+### For read-only work
+- Group multiple safe inspection commands into as few approval requests as possible.
+- Avoid asking approval separately for each small read-only command.
+- Prefer one concise inspection step over many tiny ones.
+
+### For write operations
+Before asking for approval, state clearly:
+- what will change
+- which files will change
+- why this is still within the current checkpoint
+- whether tests are needed for this step
+
+### For commit / push / PR steps
+Always summarize:
+- changed files
+- `git diff --stat`
+- whether unrelated changes exist
+- whether tests were run or intentionally not run
+
+## Completion discipline
+
+Never assume approval for:
+- writing
+- staging
+- committing
+- pushing
+- PR creation
+- deletion
+- dependency changes
+
+These always require a human checkpoint.
+
+## Short operating rule
+
+Use this rule of thumb:
+
+- read = batch it
+- write = ask
+- publish = ask
+- delete = ask
