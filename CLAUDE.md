@@ -226,3 +226,38 @@ Cursor を使わず Claude Code だけで進める場合:
 ### rejected 時
 
 orchestrator が `update_status(pending)` → executor が再開 → 修正 → 再評価
+
+## 事前包括許可（preapproved actions）
+
+以下をすべて満たす場合、executor は追加確認なしで進めてよい。
+
+### 条件
+
+- repo 内の変更である
+- Allowed files 内のみを変更する
+- public interface を変更しない
+- config schema を変更しない
+- CI / policy / deploy / hooks を変更しない
+- rename / move / delete をしない
+- 新規依存を追加しない
+- Change budget 内に収まる
+- acceptance criteria 達成に必要な最小差分である
+
+### 確認なしで実行してよい作業
+
+- Allowed files 内の実装
+- 必要最小限のテスト追加・修正
+- import 整理
+- docstring / コメント修正
+- 指定された lint / test の実行
+- 実装に伴う軽微な定数・型・エラーメッセージ調整
+
+### 次の場合のみ人間確認
+
+- Allowed files 外に触れる必要がある
+- public interface 変更が必要
+- config schema 変更が必要
+- 新規依存追加が必要
+- Change budget を超える
+- acceptance criteria を満たせない
+- 破壊的変更が必要
