@@ -1,0 +1,49 @@
+name: security-scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: security-scan-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.10.9"
+
+      - name: Install project
+        run: uv sync --dev
+
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION="8.24.3"
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar xz -C /usr/local/bin gitleaks
+          gitleaks version
+
+      - name: Install security tools
+        run: uv pip install pip-audit bandit
+
+      - name: Run security scan
+        run: uv run repo-security-checker scan --output security-report.json
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-report.json
