@@ -198,3 +198,31 @@ Cursor を使わず Claude Code だけで進める場合:
 - 迷ったら自動化レベルを下げる。
 - 迷ったら pending に戻す。
 - 迷ったら人間に確認する。
+
+## agentgov 運用ルール
+
+本リポジトリは agentgov（MCP サーバー）でタスク管理する。
+
+### 基本フロー
+
+1. `write_task` で contract 登録 → `update_status(pending)`
+2. executor が `update_status(in_progress)` → 実装 → `write_result` → `update_status(evaluation)`
+3. orchestrator が `evaluate_result` → `trigger_ci` → `report_ci`
+4. `update_status(approved)` → `update_status(done)`
+
+### ロール
+
+- **orchestrator** (Claude Code): 設計・レビュー・承認。実コード変更しない
+- **executor** (Cursor): 実装のみ。承認できない
+
+### 自動化レベル
+
+| Level | 適用場面 | risk_level |
+|---|---|---|
+| Level 1 (慎重) | 新規設計・基盤変更 | high |
+| Level 2 (通常) | 既存パターンの拡張 | medium |
+| Level 3 (委任) | typo・ドキュメント・リネーム | low |
+
+### rejected 時
+
+orchestrator が `update_status(pending)` → executor が再開 → 修正 → 再評価

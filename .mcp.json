@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "agentgov": {
+      "command": "python",
+      "args": ["C:/Users/townk/github/agentgov/server.py"],
+      "env": { "AGENTGOV_ROLE": "orchestrator" }
+    }
+  }
+}

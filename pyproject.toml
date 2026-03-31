@@ -3,7 +3,10 @@ name = "foundation-template"
 version = "0.1.0"
 description = "Checkpoint-gated AI-assisted development template"
 requires-python = ">=3.11,<3.12"
-dependencies = []
+dependencies = ["click>=8.1"]
+
+[project.scripts]
+repo-security-checker = "repo_security_checker.cli:main"
 
 [tool.ruff]
 line-length = 100
