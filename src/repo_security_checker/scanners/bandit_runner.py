@@ -20,7 +20,10 @@ def scan_code(target_dir: str = ".") -> ScanResult:
     """Run bandit to scan Python code for security issues."""
     try:
         result = subprocess.run(
-            ["bandit", "-r", target_dir, "-f", "json", "-q"],
+            [
+                "bandit", "-r", target_dir, "-f", "json", "-q",
+                "--exclude", ".venv,.tox,node_modules,.git",
+            ],
             capture_output=True,
             text=True,
         )
