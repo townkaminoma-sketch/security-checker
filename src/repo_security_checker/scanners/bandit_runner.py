@@ -20,11 +20,15 @@ def scan_code(target_dir: str = ".") -> ScanResult:
     """Run bandit to scan Python code for security issues."""
     try:
         result = subprocess.run(
-            ["bandit", "-r", target_dir, "-f", "json"],
+            ["bandit", "-r", target_dir, "-f", "json", "-q"],
             capture_output=True,
             text=True,
         )
-        data = json.loads(result.stdout) if result.stdout.strip() else {}
+        if not result.stdout.strip():
+            if result.stderr.strip():
+                logger.warning("bandit produced no JSON output: %s", result.stderr.strip()[:200])
+            return ScanResult(tool="bandit", findings=[])
+        data = json.loads(result.stdout)
     except FileNotFoundError:
         logger.warning("bandit is not installed; skipping code scan")
         return ScanResult(tool="bandit", findings=[])
