@@ -84,3 +84,56 @@ class TestCliScan:
 
         assert result.exit_code == 0
         assert "2 total" in result.output
+
+    @patch("src.repo_security_checker.cli.scan_code")
+    @patch("src.repo_security_checker.cli.scan_dependencies")
+    @patch("src.repo_security_checker.cli.scan_secrets")
+    def test_scan_min_severity_excludes_below_threshold(
+        self, mock_secrets, mock_deps, mock_code, tmp_path
+    ):
+        mock_secrets.return_value = ScanResult(
+            tool="gitleaks",
+            findings=[Finding(tool="gitleaks", severity="high", title="hi", detail="d")],
+        )
+        mock_deps.return_value = ScanResult(
+            tool="pip-audit",
+            findings=[Finding(tool="pip-audit", severity="low", title="lo", detail="d")],
+        )
+        mock_code.return_value = self._empty_result("bandit")
+
+        out_file = tmp_path / "report.json"
+        runner = CliRunner()
+        result = runner.invoke(
+            main, ["scan", "--min-severity", "high", "--output", str(out_file)]
+        )
+
+        # low finding is excluded; only the high finding remains
+        assert "1 total" in result.output
+        # exit_code derives from the post-filter set (high finding present)
+        assert result.exit_code == 1
+        assert "FAIL" in result.output
+
+    @patch("src.repo_security_checker.cli.scan_code")
+    @patch("src.repo_security_checker.cli.scan_dependencies")
+    @patch("src.repo_security_checker.cli.scan_secrets")
+    def test_scan_min_severity_excludes_info_without_raising(
+        self, mock_secrets, mock_deps, mock_code, tmp_path
+    ):
+        mock_secrets.return_value = ScanResult(
+            tool="gitleaks",
+            findings=[Finding(tool="gitleaks", severity="info", title="note", detail="d")],
+        )
+        mock_deps.return_value = self._empty_result("pip-audit")
+        mock_code.return_value = self._empty_result("bandit")
+
+        out_file = tmp_path / "report.json"
+        runner = CliRunner()
+        result = runner.invoke(
+            main, ["scan", "--min-severity", "low", "--output", str(out_file)]
+        )
+
+        # info is below every flag threshold and must be filtered out, not crash
+        assert result.exception is None
+        assert "0 total" in result.output
+        assert result.exit_code == 0
+        assert "PASS" in result.output
